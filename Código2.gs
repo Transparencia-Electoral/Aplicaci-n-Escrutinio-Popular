@@ -1,3 +1,4 @@
+//
 function guardarVerificacion2(form_data) {
 //Esta función sustituirá a guardarRecuento y aglutinará ambas funciones en una. Es llamada desde html
 //Guardamos las actas verificadas en una nueva hoja, o les ponemos la marca de verificación?

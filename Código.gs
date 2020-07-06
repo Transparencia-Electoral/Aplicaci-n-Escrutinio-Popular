@@ -3,6 +3,7 @@ Todo este código, ha sido copiado y pegado del proyecto 10N, por lo que habrá 
 
 Los cambios previstos van encaminados a:
 PRUEBA SERGIO
+Prueba IgnacioBaixauli.com
 - La verificación y el recuento es el mismo proceso
 - No hay preferencias de asignaciones por provincias
 
