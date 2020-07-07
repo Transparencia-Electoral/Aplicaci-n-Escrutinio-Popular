@@ -1,8 +1,6 @@
 /*
 Todo este código, ha sido copiado y pegado del proyecto 10N, por lo que habrá cambios sustanciales
-
 Los cambios previstos van encaminados a:
-
 - La verificación y el recuento es el mismo proceso
 - No hay preferencias de asignaciones por provincias
 
@@ -12,7 +10,7 @@ Nunca he trabajado con este editor en grupo, no sé que tal resultará
 
 Aplicación:
 Exec: https://script.google.com/macros/s/AKfycbwx_K6IfIX_9z4qc_ZnedfD77uhywSQzRAshWdgu-pfzQTzl1I/exec
-LAst code: https://script.google.com/macros/s/AKfycbwx_K6IfIX_9z4qc_ZnedfD77uhywSQzRAshWdgu-pfzQTzl1I/dev
+Last code: https://script.google.com/macros/s/AKfycbwx_K6IfIX_9z4qc_ZnedfD77uhywSQzRAshWdgu-pfzQTzl1I/dev
 */
 
 function doGet() { //Modificando Nacho
@@ -114,7 +112,7 @@ function obtenerAsignaciones() { //Devuelve las asignaciones de verificación pe
   var maxAsignaciones = 100;
   var asignadas = 0;
   var ss = SpreadsheetApp.getActive();
-  var sheetActas = ss.getSheetByName("Actas sin verificar");
+  var sheetActas = ss.getSheetByName("Actas subidas");
   var email = Session.getActiveUser().getEmail();
   //email = "admin@eleccionestransparentes.org"; //Línea para hacer pruebas
   var actas = sheetActas.getDataRange().getValues();
