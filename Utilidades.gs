@@ -1,3 +1,18 @@
+function respuestas() {
+  var sheetActas = SpreadsheetApp.getActive().getSheetByName("Actas subidas");
+  var sheetRespuestas = SpreadsheetApp.getActive().getSheetByName("Respuestas");
+  var urlForm = sheetActas.getFormUrl();
+  var form = FormApp.openByUrl(urlForm);
+  var respuestas = form.getResponses();
+  for (var nRes in respuestas) {
+    var respuesta = respuestas[nRes];
+    var timestamp = respuesta.getTimestamp();
+    var email = respuesta.getRespondentEmail();
+    var urlRespuesta = respuesta.getEditResponseUrl();
+    sheetRespuestas.appendRow([timestamp,urlRespuesta,email])
+  }
+}
+
 function crearHojas() {
   var hojaProvincias = SpreadsheetApp.getActive().getSheetByName("Circunscripciones");
   var provincias = hojaProvincias.getDataRange().getValues();
