@@ -196,9 +196,7 @@ function onFormSubmit(e) {
     var ratioCell = ssVerificadores.getRange(fila, 11);
     ratioCell.setValue('=if(E:E<>"";I:I-J:J;"")'); //Ratio de actas contadas  
     
-    DesasignarAsignarVerificaciones();
-    DesasignarAsignarRecuentos();
-
+    asignarVerificaciones();
   }
 }
 
@@ -223,9 +221,9 @@ function asignarVerificaciones() { //Asigna actas para verificar
   var maxActas = 1200; //Número máximo de actas asignada simultáneamente en este proceso
   var maxActasUsuario = 2; //Número máximo de actas asignada simultáneamente a un usuario en este proceso
   var maxActasYaAsignadas = 2; //Número máximo de actas ya asignadas a un usuario. Si supera ese número de actas, no se le asignan más
-  var actasAsignadas = 0;
+  var actasAsignadas = 0; //Contador a cero
   for (var nActa = 0 ; nActa < actas.length ; nActa++) {
-    if (!actas[nActa][127]) { //Comprobamos que el acta no ha sido ya verificada
+    if (!actas[nActa][126]) { //Comprobamos que el acta no ha sido ya verificada
       if (actas[nActa][125] == "") { //Si el acta no tiene asignado verificador
         //Bucle por verificadores
         //var actasAsignadasUsuario = 0;
@@ -240,7 +238,7 @@ function asignarVerificaciones() { //Asigna actas para verificar
                 usuarios[verificadorEscogido]["Actas asignadas sesión"]++;
                 var nada = "";
                 break;
-                SpreadsheetApp.flush();
+                //SpreadsheetApp.flush();
               }
             }
           }     
@@ -254,54 +252,6 @@ function asignarVerificaciones() { //Asigna actas para verificar
   }
   SpreadsheetApp.flush();
 }
-
-/*
-function asignarRecuentos() { //Asigna actas para recontar
-  var ss = SpreadsheetApp.getActive();
-  var verificadores = ss.getSheetByName("Verificadores").getDataRange().getValues();
-  var usuarios = getUsuarios();
-  //Ordenamos en función del más eficaz
-  verificadores.shift();
-  verificadores = verificadores.sort(function(b,a) {
-
-    return a[12] - b[12]; //0 hace referencia a la primera columna
-  });
-  var nada ="";
-  
-  //Capturamos los datos de actas
-  var sheetActas = ss.getSheetByName("Actas subidas");
-  var actas = sheetActas.getDataRange().getValues();
-  //Quitamos la cabecera
-  actas.shift();
-  
-  //Bucle por actas  
-  var maxActasYaAsignadas = 15; //Número máximo de actas ya asignadas
-  for (var nActa = 3471 ; nActa < actas.length ; nActa++) {
-    if (actas[nActa][12] == true) { //Si el acta ha sido verificada y es correcta
-      if (actas[nActa][9] == "") { //Si el acta no tiene asignado un contador
-        if (actas[nActa][11] == false) {//si el acta no ha sido contada
-          for (var nVeri in verificadores) {
-            var provinciaDelActa = actas[nActa][2];
-            var provinciaDelVerificador = verificadores[nVeri][2];
-            if (provinciaDelVerificador.toUpperCase() == provinciaDelActa.toUpperCase()) { //Comprobamos si al contador le corresponde esta provincia
-              var verificadorEscogido = verificadores[nVeri][1];
-              if (usuarios[verificadorEscogido]["Faltan por contar"] < maxActasYaAsignadas) {
-                if (usuarios[verificadorEscogido]["Condiciones del servicio"] == "Acepto las condiciones del servicio") {
-                  var rangoActa = sheetActas.getRange(Number(nActa)+2, 10);
-                  rangoActa.setValue(verificadorEscogido);
-                  var nada = "";
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  SpreadsheetApp.flush();
-}
-*/
 
 function desasignarVerificaciones() {
   //Dadas las grandes cantidades de asignaciones que acumulan algunos usuario y que en cambio no están dispuestos a atender. Se plantea un sistema de desasignación de verificaciones para que estas puedan ser reasignadas a gente más competente
