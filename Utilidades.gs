@@ -1,3 +1,58 @@
+function asignarHojasdeCalculoAVerificadores() {
+  var hojaDeVerificadores = SpreadsheetApp.getActive().getSheetByName("Verificadores");
+  var verificadores = hojaDeVerificadores.getDataRange().getValues();
+  for (var nVer = 1 ; nVer < verificadores.length ; nVer++) {
+    if (verificadores[nVer][4] == "Acepto las condiciones del servicio") {
+      if (verificadores[nVer][8] == "") {
+        var modelo = SpreadsheetApp.openById("13k1Cj6VDzFCCnQVpY1n6KMqW00vx35TBqTYuY8SJc88");
+        var email = verificadores[nVer][1];
+        //var email = "ignaciobaixauli@ignaciobaixauli.com";
+        var nombreDeHoja = "Hoja de verificación de actas de "+email;
+        var nuevaHoja = modelo.copy(nombreDeHoja);
+        var idCarpetaVerificadores = "1SirUrAnUbfs3bhPSWBMJyaTeGo5vTXOg";
+        var idNuevaHoja = nuevaHoja.getId();
+        var file = DriveApp.getFileById(idNuevaHoja);
+        var folder = DriveApp.getFolderById(idCarpetaVerificadores);
+        var newFile = file.makeCopy(nombreDeHoja,folder);
+ 
+        DriveApp.getFileById(idNuevaHoja).setTrashed(true);
+        var urlNuevahoja = newFile.getUrl();
+        hojaDeVerificadores.getRange(nVer+1, 9).setValue(urlNuevahoja);
+        MailApp.sendEmail({
+          to: email,
+          subject: "Nueva hoja de cálculo de verificaciones",
+          htmlBody: "Hola, <br>" +
+          "Te ha sido asignada una nueva hoja de verificaciones en " + urlNuevahoja + "<br>" +
+          "En el menú de la parte superior (Tarda un poco en salir), selecciona Verificación de actas / Obtener actas para verificar (Tendrás que dar las autorizaciones necesaria, sólo la primera vez que lo ejecutes), y si tienes algún acta por verificar te aparecerá. Piensa que aún estamos de pruebas, tenemos pocas actas y quizá no lleguen para todos. Sube muchas actas a https://www.eleccionestransparentes.org/escrutinios/popular/subida-de-actas y todos tendremos mejores posibilidades de probar el sistema <br>" + 
+          "En https://docs.google.com/document/d/1XoANycTvtmDEzYXiAUVSEcYvTvN3_CGEssYRssp8k7o/edit?usp=sharing , tienes el manual de la aplicación por si tienes alguna duda.<br>" +
+          "Gracias como siempre por tu esfuerzo y colaboración."
+        });
+        var nada = "";
+      }
+    }
+  }
+  SpreadsheetApp.flush();
+}
+
+function obtenerActasVerificadas() {
+  var hojaActasSubidas = SpreadsheetApp.getActive().getSheetByName("Actas subidas");
+  var hojaVerificadas = SpreadsheetApp.getActive().getSheetByName("Actas verificadas");
+  //Bucle por verificador
+  var hojaDeVerificadores = SpreadsheetApp.getActive().getSheetByName("Verificadores");
+  var verificadores = hojaDeVerificadores.getDataRange().getValues();
+  for (var nVer in verificadores) {
+    var verificador = verificadores[nVer][1];
+    var urlHoja = verificadores[nVer][8];
+    var actasVerificadasDeVerificador = SpreadsheetApp.openByUrl(urlHoja).getSheetByName("Actas verificadas").getDataRange();
+    for (var nActa in actasVerificadasDeVerificador) {
+      var urlFormulario = actasVerificadasDeVerificador[nActa][3];
+      var urlFoto = actasVerificadasDeVerificador[nActa][2];
+      hojaVerificadas.appendRow([verificador,urlFormulario,urlFoto]);
+      SpreadsheetApp.flush();
+    }
+  }
+}
+
 function respuestas() {
   var sheetActas = SpreadsheetApp.getActive().getSheetByName("Actas subidas");
   var sheetRespuestas = SpreadsheetApp.getActive().getSheetByName("Respuestas");
