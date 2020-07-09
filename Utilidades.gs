@@ -14,7 +14,8 @@ function asignarHojasdeCalculoAVerificadores() {
         var file = DriveApp.getFileById(idNuevaHoja);
         var folder = DriveApp.getFolderById(idCarpetaVerificadores);
         var newFile = file.makeCopy(nombreDeHoja,folder);
- 
+        newFile.addEditors([email,"sergio@eleccionestransparentes.org","ignaciobaixauli@ignaciobaixauli.com"]);
+
         DriveApp.getFileById(idNuevaHoja).setTrashed(true);
         var urlNuevahoja = newFile.getUrl();
         hojaDeVerificadores.getRange(nVer+1, 9).setValue(urlNuevahoja);
