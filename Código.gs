@@ -261,7 +261,7 @@ function desasignarVerificaciones() {
   //Ordenamos en función del más eficaz
   verificadores.shift(); //Quitamos la cabecera
   verificadores = verificadores.sort(function(a,b) {
-    return a[11] - b[11]; //0 hace referencia a la primera columna
+    return b[7] - a[7]; //Ordenamos descendente por actas pendientes de verificar
   });
   var nada ="";
   
@@ -272,18 +272,20 @@ function desasignarVerificaciones() {
   actas.shift();
   
   //Bucle por actas 
-  var maxActas = 100; //Número máximo de actas desasignada simultáneamente en este proceso
-  var actasDesasignadas = 0;
-  //Bucle por verificadores
+  var maxActas = 5; //Número máximo de actas desasignadas simultáneamente en este proceso
+  var actasDesasignadas = 0; //Contador a cero
+  //Bucle por verificadores ordenados por última fecha de modificación ascendente. Ya veremos como queda esto
   for (var nVeri in verificadores) {
     var verificadorEscogido = verificadores[nVeri][1];
-    for (var nActa = 3810 ; nActa < actas.length ; nActa++) {
-      if (!actas[nActa][10]) { //Comprobamos que el acta no ha sido ya verificada
-        if (actas[nActa][8] !== "") { //Si el acta tiene asignado verificador
-          if (verificadorEscogido == actas[nActa][8]) { //Comprobamos si al verificador es el elegido
+    //for (var nActa = 0 ; nActa < actas.length ; nActa++) {
+    for (var nActa = actas.length-1 ; nActa >= 0 ; nActa--) {
+      if (!actas[nActa][126]) { //Comprobamos que el acta no ha sido ya verificada
+        if (actas[nActa][125] !== "") { //Si el acta tiene asignado verificador
+          if (verificadorEscogido == actas[nActa][125]) { //Comprobamos si al verificador es el elegido
             var actaEscogida = actas[nActa][1];
-            var rangoActa = sheetActas.getRange(Number(nActa)+2, 9);
+            var rangoActa = sheetActas.getRange(Number(nActa)+2, 126);
             rangoActa.setValue("");
+            //SpreadsheetApp.flush();
             actasDesasignadas++;
             if (actasDesasignadas >= maxActas) {
               var nada = "";
