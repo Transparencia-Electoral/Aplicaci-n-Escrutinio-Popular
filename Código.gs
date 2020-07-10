@@ -207,7 +207,7 @@ function asignarVerificaciones() { //Asigna actas para verificar
   //Ordenamos en función del más eficaz
   verificadores.shift();
   verificadores = verificadores.sort(function(b,a) {
-    return a[11] - b[11]; //0 hace referencia a la primera columna
+    return a[6] - b[6]; //Ordenar descendente de mejor a peor verificador
   });
   var nada ="";
   
@@ -220,7 +220,7 @@ function asignarVerificaciones() { //Asigna actas para verificar
   //Bucle por actas 
   var maxActas = 1200; //Número máximo de actas asignada simultáneamente en este proceso
   var maxActasUsuario = 2; //Número máximo de actas asignada simultáneamente a un usuario en este proceso
-  var maxActasYaAsignadas = 2; //Número máximo de actas ya asignadas a un usuario. Si supera ese número de actas, no se le asignan más
+  var maxActasYaAsignadas = 3; //Número máximo de actas ya asignadas a un usuario. Si supera ese número de actas, no se le asignan más
   var actasAsignadas = 0; //Contador a cero
   for (var nActa = 0 ; nActa < actas.length ; nActa++) {
     if (!actas[nActa][126]) { //Comprobamos que el acta no ha sido ya verificada
