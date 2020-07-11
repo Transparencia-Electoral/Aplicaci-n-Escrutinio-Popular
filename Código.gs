@@ -92,59 +92,65 @@ function obtenerAsignaciones() { //Devuelve las asignaciones de verificación pe
 
 
 function onFormSubmit(e) {
-  //Diferenciar si es un alta de acta o de verificador
-  var datosFormulario = e.namedValues;
-  Logger.log('e.namedValues:'+ e.namedValues);
-  Logger.log('Datos:'+ datosFormulario);
-  //console.log({message: 'Registro', Datos: datosFormulario});
-  if (datosFormulario.hasOwnProperty('Fotografía del acta')) { //El formulario enviado es de actas
-    
-    //Añadir función para ver si está verificado
-    //=iferror(VLOOKUP(B2;'Actas verificadas'!B$2:M;2;false);false)
-    var range = e.range;
-    var fila = range.getRow();
-    var ssActasSubidas = SpreadsheetApp.getActive().getSheetByName("Actas subidas");
-    var verificadaCell = ssActasSubidas.getRange(fila, 11);
-    verificadaCell.setValue("=iferror(if(VLOOKUP(B:B;'Actas verificadas'!B$2:B;1;false)<>\"\";true;false);false)");
-    var contadaCell = ssActasSubidas.getRange(fila, 12);
-    contadaCell.setValue("=iferror(if(VLOOKUP(B:B;'Actas recontadas'!B$1:B;1;false)<>\"\";true;false);false)");
-    var correctaCell = ssActasSubidas.getRange(fila, 13);
-    correctaCell.setValue("=iferror(VLOOKUP(B:B;'Actas verificadas'!B$2:C;2;FALSO);\"\")");
-    //Cambio de nombre de fichero
-    var fotoUrl = datosFormulario["Fotografía del acta"][0];
-    var fotoUrlArray = fotoUrl.split("=");
-    var fotoId = fotoUrlArray[1];
-    Logger.log("fotoId:"+fotoId);
-    var fotoFile = DriveApp.getFileById(fotoId);
-    fotoFile.setName(fotoId);
-
-    //Asignar verificación
-    asignarVerificaciones();
-    //DesasignarAsignarVerificaciones();
-    
-  } else { //El formulario enviado es de verificadores
-    
-    //Asignar funciones/fórmulas
-    var range = e.range;
-    var fila = range.getRow();
-    var ssVerificadores = SpreadsheetApp.getActive().getSheetByName("Verificadores");
-    //Calculo de verificaciones
-    var asignacionesCell = ssVerificadores.getRange(fila, 6);
-    asignacionesCell.setValue("=countif('Actas subidas'!I$2:I;B:B)"); //Actas asignadas
-    var asignacionesCell = ssVerificadores.getRange(fila, 7);
-    asignacionesCell.setValue("=countif('Actas verificadas'!L$2:L;B:B)"); //Actas verificadas
-    var ratioCell = ssVerificadores.getRange(fila, 8);
-    ratioCell.setValue('=if(E:E<>"";F:F-G:G;"")'); //Ratio de asignaciónes
-    //Cálculo de conteos
-    var asignacionesCell = ssVerificadores.getRange(fila, 9);
-    asignacionesCell.setValue("=countif('Actas subidas'!J$2:JI;B:B)"); //Actas asignadas para contar
-    var asignacionesCell = ssVerificadores.getRange(fila, 10);
-    asignacionesCell.setValue("=countif('Actas recontadas'!K$1:K;B:B)"); //Actas contadas
-    //=countif('Actas recontadas'!K$1:K;B:B)
-    var ratioCell = ssVerificadores.getRange(fila, 11);
-    ratioCell.setValue('=if(E:E<>"";I:I-J:J;"")'); //Ratio de actas contadas  
-    
-    asignarVerificaciones();
+  try{
+    //Diferenciar si es un alta de acta o de verificador
+    var datosFormulario = e.namedValues;
+    Logger.log('e.namedValues:'+ e.namedValues);
+    Logger.log('Datos:'+ datosFormulario);
+    //console.log({message: 'Registro', Datos: datosFormulario});
+    if (datosFormulario.hasOwnProperty('Fotografía del acta')) { //El formulario enviado es de actas
+      
+      //Añadir función para ver si está verificado
+      //=iferror(VLOOKUP(B2;'Actas verificadas'!B$2:M;2;false);false)
+      
+      //var range = e.range;
+      //var fila = range.getRow();
+      //var ssActasSubidas = SpreadsheetApp.getActive().getSheetByName("Actas subidas");
+      
+      /*
+      var verificadaCell = ssActasSubidas.getRange(fila, 11);
+      verificadaCell.setValue("=iferror(if(VLOOKUP(B:B;'Actas verificadas'!B$2:B;1;false)<>\"\";true;false);false)");
+      var contadaCell = ssActasSubidas.getRange(fila, 12);
+      contadaCell.setValue("=iferror(if(VLOOKUP(B:B;'Actas recontadas'!B$1:B;1;false)<>\"\";true;false);false)");
+      var correctaCell = ssActasSubidas.getRange(fila, 13);
+      correctaCell.setValue("=iferror(VLOOKUP(B:B;'Actas verificadas'!B$2:C;2;FALSO);\"\")");
+      */
+      //Cambio de nombre de fichero
+      /*var fotoUrl = datosFormulario["Fotografía del acta"][0];
+      var fotoUrlArray = fotoUrl.split("=");
+      var fotoId = fotoUrlArray[1];
+      Logger.log("fotoId:"+fotoId);
+      var fotoFile = DriveApp.getFileById(fotoId);
+      fotoFile.setName(fotoId);
+      */
+      
+      //Renombrar fotos
+      renombrarFotos();
+      //Asignar verificación
+      asignarVerificaciones();
+      //DesasignarAsignarVerificaciones();
+      Logger.log("Ejecución correcta acta");
+      
+    } else { //El formulario enviado es de verificadores
+      
+      //Asignar funciones/fórmulas
+      var range = e.range;
+      var fila = range.getRow();
+      var ssVerificadores = SpreadsheetApp.getActive().getSheetByName("Verificadores");
+      //Calculo de verificaciones
+      var asignacionesCell = ssVerificadores.getRange(fila, 6);
+      asignacionesCell.setValue("=CONTAR.SI('Actas subidas'!DV$2:DV;B:B)"); //Actas asignadas
+      var asignacionesCell = ssVerificadores.getRange(fila, 7);
+      asignacionesCell.setValue("=CONTAR.SI('Actas verificadas'!A$2:A;B:B)"); //Actas verificadas
+      var ratioCell = ssVerificadores.getRange(fila, 8);
+      ratioCell.setValue('=if(E:E<>"";F:F-G:G;"")'); //Ratio de asignaciónes    
+      asignarVerificaciones();
+      Logger.log("Ejecución correcta verificador");
+    }
+  } catch(error) {
+    var errorMag = error.message;
+    Logger.log("Error: "+errorMag);
+    var nada = "";
   }
 }
 
@@ -251,57 +257,24 @@ function desasignarVerificaciones() {
   SpreadsheetApp.flush();
 }
 
-/*
-function desasignarRecuentos() { //Desasigna actas para contar cuando alguien acumula demasiadas
-  var ss = SpreadsheetApp.getActive();
-  var verificadores = ss.getSheetByName("Verificadores").getDataRange().getValues();
-  var usuarios = getUsuarios();
-  //Ordenamos en función del más eficaz
-  verificadores.shift();
-  verificadores = verificadores.sort(function(a,b) { //Ordenamos por orden inverso del que más tiene al que menos
-
-    return a[12] - b[12]; //0 hace referencia a la primera columna
-  });
-  var nada ="";
-  
-  //Capturamos los datos de actas
-  var sheetActas = ss.getSheetByName("Actas subidas");
-  var actas = sheetActas.getDataRange().getValues();
-  //Quitamos la cabecera
-  actas.shift();
-  
-  //Bucle por actas  
-  var maxActas = 25; //Número máximo de actas desasignada simultáneamente en este proceso
-  var actasDesasignadas = 0;
-
-  for (var nVeri in verificadores) {
-    var verificadorEscogido = verificadores[nVeri][1];
-    for (var nActa = 3400 ; nActa < actas.length ; nActa++) {
-      if (actas[nActa][12] == true) { //Si el acta ha sido verificada y es correcta
-        if (actas[nActa][9] == verificadorEscogido) { //Si el acta tiene asignado un contador
-          if (actas[nActa][11] != true) {//si el acta no ha sido contada
-            var rangoActa = sheetActas.getRange(Number(nActa)+2, 10);
-            rangoActa.setValue("");
-            //SpreadsheetApp.flush();
-            actasDesasignadas++;
-            if (actasDesasignadas >= maxActas) {
-              var nada = "";
-              break;
-            }
-            var nada = "";
-          }
-        }
-      }
+function renombrarFotos() {
+  var hojaFotos = SpreadsheetApp.getActive().getSheetByName("Fotos");
+  var fotos = hojaFotos.getDataRange().getValues();
+  for (var nFoto = 0 ; nFoto < fotos.length ; nFoto++) {
+    var renombrada = fotos[nFoto][1];
+    if (renombrada != "Renombrada") {
+      var fotoUrl = fotos[nFoto][0];
+      var fotoUrlArray = fotoUrl.split("=");
+      var fotoId = fotoUrlArray[1];
+      //Logger.log("fotoId:"+fotoId);
+      var fotoFile = DriveApp.getFileById(fotoId);
+      fotoFile.setName(fotoId);
+      var celda = hojaFotos.getRange(nFoto+1, 2);
+      celda.setValue("Renombrada");
+      SpreadsheetApp.flush();
     }
-    if (actasDesasignadas >= maxActas) {
-      var nada = "";
-      break;
-    }
-    
   }
-  SpreadsheetApp.flush();
 }
-*/
 
 function DesasignarAsignarVerificaciones() {
   desasignarVerificaciones();
