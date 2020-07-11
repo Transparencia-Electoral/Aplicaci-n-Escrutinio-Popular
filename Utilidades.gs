@@ -1,3 +1,72 @@
+/**
+* Aplica la ley D'Hondt a resultados representados en una columna
+*
+* @param  {array}  celdas en una columna con votos
+* @param  {number}  % mínimo para obtener escaños
+* @param  {number}  Escaños en juego
+* @return {array} Devuelve los escaños de cada fila en una sóla columna apartir de la celda que alberga la función
+*
+* @customfunction
+*/
+function dhondt(valores,porcentajeExclusion,escanos) {
+
+  //Obtenemos la suma de votos incluido los votos en blanco
+  var sumaDeVotos = 0;
+  for (var nFila in valores) {
+    sumaDeVotos += valores[nFila][0];
+  }
+  var votosMinimos = sumaDeVotos * porcentajeExclusion / 100;
+  var nada = "";
+  
+  //Descartamos las candidaturas con menos del 3% de los votos poniendolas a cero
+  for (nFila in valores) {
+    if (valores[nFila][0] < votosMinimos) {
+      valores[nFila][0] = 0;
+    }
+  }
+  
+  //Dividimos por el número de escaños
+  var arrayEscanos = [];
+  var nFormVotos = 0;
+  for (var nEsc = 1 ; nEsc <= escanos ; nEsc++) {
+    //arrayEscanos[nEsc-1] = [];
+    for (var nFormacion in valores) {
+      arrayEscanos[nFormVotos] = [];
+      arrayEscanos[nFormVotos][0] = nFormacion;
+      arrayEscanos[nFormVotos][1] = valores[nFormacion] / nEsc;
+      nFormVotos++;
+    }  
+  }
+  var nada = "";
+  
+  //Ordenamos de mayor a menor
+  
+  arrayEscanos = arrayEscanos.sort(function(b,a) {
+    return a[1] - b[1]; 
+  });
+  var nada = "";
+  
+  //Creamos una matriz de escaños
+  
+  var matEscanos = [];
+  for (var nForm in valores) {
+    matEscanos[nForm] = [0];
+  } 
+  var sumAsignados = 0;
+  for (nEsc in arrayEscanos) {
+    matEscanos[arrayEscanos[nEsc][0]][0]++;
+    sumAsignados++;
+    if (sumAsignados == escanos) {
+      break;
+    }
+  }
+  var nada = "";
+  
+  //Devolvemos matriz de escaños
+  
+  return matEscanos;
+}
+
 function asignarHojasdeCalculoAVerificadores() {
   var hojaDeVerificadores = SpreadsheetApp.getActive().getSheetByName("Verificadores");
   var verificadores = hojaDeVerificadores.getDataRange().getValues();
