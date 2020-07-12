@@ -124,12 +124,12 @@ function onFormSubmit(e) {
       fotoFile.setName(fotoId);
       */
       
-      //Renombrar fotos
-      renombrarFotos();
       //Asignar verificación
       asignarVerificaciones();
       //DesasignarAsignarVerificaciones();
-      Logger.log("Ejecución correcta acta");
+      //Renombrar fotos
+      renombrarFotos();
+      //Logger.log("Ejecución correcta acta");
       
     } else { //El formulario enviado es de verificadores
       
@@ -141,7 +141,7 @@ function onFormSubmit(e) {
       var asignacionesCell = ssVerificadores.getRange(fila, 6);
       asignacionesCell.setValue("=CONTAR.SI('Actas subidas'!DV$2:DV;B:B)"); //Actas asignadas
       var asignacionesCell = ssVerificadores.getRange(fila, 7);
-      asignacionesCell.setValue("=CONTAR.SI('Actas verificadas'!A$2:A;B:B)"); //Actas verificadas
+      asignacionesCell.setValue("=CONTAR.SI('Actas verificadas'!DX$2:DX;B:B)"); //Actas verificadas
       var ratioCell = ssVerificadores.getRange(fila, 8);
       ratioCell.setValue('=if(E:E<>"";F:F-G:G;"")'); //Ratio de asignaciónes    
       asignarVerificaciones();
@@ -271,7 +271,7 @@ function renombrarFotos() {
       fotoFile.setName(fotoId);
       var celda = hojaFotos.getRange(nFoto+1, 2);
       celda.setValue("Renombrada");
-      SpreadsheetApp.flush();
+      //SpreadsheetApp.flush();
     }
   }
 }
@@ -281,9 +281,28 @@ function DesasignarAsignarVerificaciones() {
   asignarVerificaciones();
 }
 
-/*
-function DesasignarAsignarRecuentos() {
-  desasignarRecuentos();
-  asignarRecuentos();
+function obtenerActasVerificadas() {
+  var hojaActasSubidas = SpreadsheetApp.getActive().getSheetByName("Actas subidas");
+  var hojaVerificadas = SpreadsheetApp.getActive().getSheetByName("Actas verificadas");
+  var hojaDeVerificadores = SpreadsheetApp.getActive().getSheetByName("Verificadores");
+  var verificadores = hojaDeVerificadores.getDataRange().getValues();
+  for (var nVer = 1 ; nVer < verificadores.length ; nVer++) { //Bucle por verificador
+    var verificador = verificadores[nVer][1];
+    var urlHoja = verificadores[nVer][8];
+    if (urlHoja != "") {
+      var actasVerificadasDeVerificador = SpreadsheetApp.openByUrl(urlHoja).getSheetByName("Actas verificadas").getDataRange().getValues();
+      for (var nActa = 1 ; nActa < actasVerificadasDeVerificador.length ; nActa++) { //Bucle de actas verificadas
+        //var urlFormulario = actasVerificadasDeVerificador[nActa][3];
+        //var urlFoto = actasVerificadasDeVerificador[nActa][2];
+        //hojaVerificadas.appendRow([verificador,urlFormulario,urlFoto]);
+        actasVerificadasDeVerificador[nActa][127] = verificador;
+        hojaVerificadas.appendRow(actasVerificadasDeVerificador[nActa]);
+      }
+    }
+  }
+  SpreadsheetApp.flush();
+  //Quitar duplicados
+  var rango = hojaVerificadas.getDataRange();
+  rango.removeDuplicates();
+  SpreadsheetApp.flush();
 }
-*/
