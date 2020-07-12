@@ -92,11 +92,10 @@ function asignarHojasdeCalculoAVerificadores() {
           to: email,
           subject: "Nueva hoja de cálculo de verificaciones",
           htmlBody: "Hola, <br>" +
-          "Sergio ha creado un nuevo modelo de hoja de verificación mucho más cómodo cuya nueva dirección te adjunto en este correo<br>" +
-          "Te ha sido asignada una nueva hoja de verificaciones en " + urlNuevahoja + "<br>" +
-          "En esta ocasión, todo el trabajo se realiza en una pestaña llamada formulario y que simula mejor la estructura de el acta de escrutinio<br>" +
+          "Bienvenido al equipo de verificadores PET<br>" +
+          "Te ha sido asignada una hoja de verificaciones en " + urlNuevahoja + "<br>" +
           "En el menú de la parte superior, selecciona Verificación de actas / Obtener actas para verificar, y si tienes algún acta por verificar te aparecerá en la pestaña verificaciones.<br>" + 
-          "En https://docs.google.com/document/d/1XoANycTvtmDEzYXiAUVSEcYvTvN3_CGEssYRssp8k7o/edit?usp=sharing , tienes el manual de la aplicación por si tienes alguna duda.<br>" +
+          "En https://docs.google.com/document/d/1XoANycTvtmDEzYXiAUVSEcYvTvN3_CGEssYRssp8k7o/edit?usp=sharing, tienes el manual de la aplicación por si tienes alguna duda.<br>" +
           "Gracias como siempre por tu esfuerzo y colaboración."
         });
         var nada = "";

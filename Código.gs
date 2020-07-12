@@ -99,31 +99,7 @@ function onFormSubmit(e) {
     Logger.log('Datos:'+ datosFormulario);
     //console.log({message: 'Registro', Datos: datosFormulario});
     if (datosFormulario.hasOwnProperty('Fotografía del acta')) { //El formulario enviado es de actas
-      
-      //Añadir función para ver si está verificado
-      //=iferror(VLOOKUP(B2;'Actas verificadas'!B$2:M;2;false);false)
-      
-      //var range = e.range;
-      //var fila = range.getRow();
-      //var ssActasSubidas = SpreadsheetApp.getActive().getSheetByName("Actas subidas");
-      
-      /*
-      var verificadaCell = ssActasSubidas.getRange(fila, 11);
-      verificadaCell.setValue("=iferror(if(VLOOKUP(B:B;'Actas verificadas'!B$2:B;1;false)<>\"\";true;false);false)");
-      var contadaCell = ssActasSubidas.getRange(fila, 12);
-      contadaCell.setValue("=iferror(if(VLOOKUP(B:B;'Actas recontadas'!B$1:B;1;false)<>\"\";true;false);false)");
-      var correctaCell = ssActasSubidas.getRange(fila, 13);
-      correctaCell.setValue("=iferror(VLOOKUP(B:B;'Actas verificadas'!B$2:C;2;FALSO);\"\")");
-      */
-      //Cambio de nombre de fichero
-      /*var fotoUrl = datosFormulario["Fotografía del acta"][0];
-      var fotoUrlArray = fotoUrl.split("=");
-      var fotoId = fotoUrlArray[1];
-      Logger.log("fotoId:"+fotoId);
-      var fotoFile = DriveApp.getFileById(fotoId);
-      fotoFile.setName(fotoId);
-      */
-      
+            
       //Asignar verificación
       asignarVerificaciones();
       //DesasignarAsignarVerificaciones();
@@ -146,6 +122,8 @@ function onFormSubmit(e) {
       ratioCell.setValue('=if(E:E<>"";F:F-G:G;"")'); //Ratio de asignaciónes    
       asignarVerificaciones();
       Logger.log("Ejecución correcta verificador");
+      
+      asignarHojasdeCalculoAVerificadores(); //Le creamos y asignamos una hoja de cálculo
     }
   } catch(error) {
     var errorMag = error.message;
