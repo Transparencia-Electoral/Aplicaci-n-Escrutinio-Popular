@@ -290,15 +290,17 @@ function obtenerActasVerificadas() {
     var verificador = verificadores[nVer][1];
     var urlHoja = verificadores[nVer][8];
     if (urlHoja != "") {
-      var actasVerificadasDeVerificador = SpreadsheetApp.openByUrl(urlHoja).getSheetByName("Actas verificadas").getDataRange().getValues();
+      var hojaActasVerificadasDeVerificador = SpreadsheetApp.openByUrl(urlHoja).getSheetByName("Actas verificadas");
+      var actasVerificadasDeVerificador = hojaActasVerificadasDeVerificador.getDataRange().getValues();
       for (var nActa = 1 ; nActa < actasVerificadasDeVerificador.length ; nActa++) { //Bucle de actas verificadas
-        //var urlFormulario = actasVerificadasDeVerificador[nActa][3];
-        //var urlFoto = actasVerificadasDeVerificador[nActa][2];
-        //hojaVerificadas.appendRow([verificador,urlFormulario,urlFoto]);
-        actasVerificadasDeVerificador[nActa][127] = verificador;
-        hojaVerificadas.appendRow(actasVerificadasDeVerificador[nActa]);
+        if (actasVerificadasDeVerificador[nActa][128] != "Registrada") {
+          actasVerificadasDeVerificador[nActa][127] = verificador;
+          hojaVerificadas.appendRow(actasVerificadasDeVerificador[nActa]);
+          hojaActasVerificadasDeVerificador.getRange(nActa+1, 129).setValue("Registrada");
+        }
       }
     }
+    SpreadsheetApp.flush();
   }
   SpreadsheetApp.flush();
   //Quitar duplicados
