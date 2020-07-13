@@ -151,8 +151,8 @@ function asignarVerificaciones() { //Asigna actas para verificar
   
   //Bucle por actas 
   var maxActas = 1200; //Número máximo de actas asignada simultáneamente en este proceso
-  var maxActasUsuario = 2; //Número máximo de actas asignada simultáneamente a un usuario en este proceso
-  var maxActasYaAsignadas = 3; //Número máximo de actas ya asignadas a un usuario. Si supera ese número de actas, no se le asignan más
+  var maxActasUsuario = 1; //Número máximo de actas asignada simultáneamente a un usuario en este proceso
+  var maxActasYaAsignadas = 2; //Número máximo de actas ya asignadas a un usuario. Si supera ese número de actas, no se le asignan más
   var actasAsignadas = 0; //Contador a cero
   for (var nActa = 0 ; nActa < actas.length ; nActa++) {
     if (!actas[nActa][126]) { //Comprobamos que el acta no ha sido ya verificada
@@ -166,11 +166,14 @@ function asignarVerificaciones() { //Asigna actas para verificar
               if (usuarios[verificadorEscogido]["Actas asignadas sesión"] < maxActasUsuario) {
                 var rangoActa = sheetActas.getRange(Number(nActa)+2, 126); //Celda en la que se guarda el correo electrónico del verificador escogido para este acta
                 rangoActa.setValue(verificadorEscogido);
+                var rangoActa = sheetActas.getRange(Number(nActa)+2, 127); //Celda en la que se guarda la fórmula que indica si el acta está verificada o no
+                rangoActa.setValue("=COUNTIF('Actas verificadas'!B$2:B;B:B)");
                 actasAsignadas++;
                 usuarios[verificadorEscogido]["Actas asignadas sesión"]++;
                 var nada = "";
                 break;
                 //SpreadsheetApp.flush();
+                //=CONTAR.SI('Actas verificadas'!B$2:B;B:B)
               }
             }
           }     
@@ -204,25 +207,25 @@ function desasignarVerificaciones() {
   actas.shift();
   
   //Bucle por actas 
-  var maxActas = 5; //Número máximo de actas desasignadas simultáneamente en este proceso
+  var maxActas = 4; //Número máximo de actas desasignadas simultáneamente en este proceso
   var actasDesasignadas = 0; //Contador a cero
   //Bucle por verificadores ordenados por última fecha de modificación ascendente. Ya veremos como queda esto
   for (var nVeri in verificadores) {
     var verificadorEscogido = verificadores[nVeri][1];
     //for (var nActa = 0 ; nActa < actas.length ; nActa++) {
     for (var nActa = actas.length-1 ; nActa >= 0 ; nActa--) {
-      if (!actas[nActa][126]) { //Comprobamos que el acta no ha sido ya verificada
+      if (actas[nActa][126] != 1) { //Comprobamos que el acta no ha sido ya verificada
         if (actas[nActa][125] !== "") { //Si el acta tiene asignado verificador
           if (verificadorEscogido == actas[nActa][125]) { //Comprobamos si al verificador es el elegido
+            if (actasDesasignadas >= maxActas) {
+              var nada = "";
+              break;
+            }
             var actaEscogida = actas[nActa][1];
             var rangoActa = sheetActas.getRange(Number(nActa)+2, 126);
             rangoActa.setValue("");
             //SpreadsheetApp.flush();
             actasDesasignadas++;
-            if (actasDesasignadas >= maxActas) {
-              var nada = "";
-              break;
-            }
           }
         }
       }
@@ -232,6 +235,7 @@ function desasignarVerificaciones() {
       break;
     }
   }
+  asignarVerificaciones();
   SpreadsheetApp.flush();
 }
 
@@ -285,4 +289,6 @@ function obtenerActasVerificadas() {
   var rango = hojaVerificadas.getDataRange();
   rango.removeDuplicates();
   SpreadsheetApp.flush();
+  desasignarActas();
+  asignarActas();
 }
