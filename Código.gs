@@ -214,7 +214,7 @@ function desasignarVerificaciones() {
     var verificadorEscogido = verificadores[nVeri][1];
     //for (var nActa = 0 ; nActa < actas.length ; nActa++) {
     for (var nActa = actas.length-1 ; nActa >= 0 ; nActa--) {
-      if (actas[nActa][126] != 1) { //Comprobamos que el acta no ha sido ya verificada
+      if (actas[nActa][126] <= 1) { //Comprobamos que el acta no ha sido ya verificada
         if (actas[nActa][125] !== "") { //Si el acta tiene asignado verificador
           if (verificadorEscogido == actas[nActa][125]) { //Comprobamos si al verificador es el elegido
             if (actasDesasignadas >= maxActas) {
@@ -250,9 +250,12 @@ function renombrarFotos() {
       var fotoId = fotoUrlArray[1];
       //Logger.log("fotoId:"+fotoId);
       var fotoFile = DriveApp.getFileById(fotoId);
+      var nombreAterior = fotoFile.getName();
       fotoFile.setName(fotoId);
       var celda = hojaFotos.getRange(nFoto+1, 2);
       celda.setValue("Renombrada");
+      var celda = hojaFotos.getRange(nFoto+1, 3);
+      celda.setValue(nombreAterior);
       //SpreadsheetApp.flush();
     }
   }
@@ -289,6 +292,6 @@ function obtenerActasVerificadas() {
   var rango = hojaVerificadas.getDataRange();
   rango.removeDuplicates();
   SpreadsheetApp.flush();
-  desasignarActas();
-  asignarActas();
+  desasignarVerificaciones();
+  asignarVerificaciones();
 }
